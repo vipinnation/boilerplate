@@ -1,54 +1,141 @@
-import mongoose, { Schema } from 'mongoose';
-import jwt from 'jsonwebtoken';
-import { config } from '../../config/config';
-
-// Email Validation
-const validateEmail = function (email: any) {
-    const re = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/;
-    return re.test(email);
-};
+import mongoose, { Schema, Document, Model } from 'mongoose';
+import bcrypt from 'bcryptjs';
+import DB_NAMES from '../../config/db-names';
+import ENUMS from '../../config/enums';
 
 
-const UserSchema: Schema = new Schema<any>(
+
+export interface IUser extends Document {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone?: string;
+    password: string;
+    role: string;
+    profileImage?: string;
+    isActive: boolean;
+    isBlocked: boolean;
+    lastLogin?: Date;
+    isDeleted?: boolean;
+    school?: mongoose.Types.ObjectId;
+    staff?: mongoose.Types.ObjectId;
+    student?: mongoose.Types.ObjectId;
+    teacher?: mongoose.Types.ObjectId;
+    parent?: mongoose.Types.ObjectId;
+
+    // Method to compare password
+    comparePassword (candidatePassword: string): Promise<boolean>;
+}
+
+const UserSchema: Schema = new Schema<IUser>(
     {
-        first_name: {
+        firstName: {
             type: String,
             trim: true,
-            required: [true, 'First is required']
         },
-        last_name: { type: String, trim: true },
+        lastName: {
+            type: String,
+            trim: true,
+        },
         email: {
             type: String,
-            required: true,
+            required: [true, 'Email is required'],
             unique: true,
-            trim: true,
             lowercase: true,
-            validate: [validateEmail, 'Please fill a valid email address'],
-            match: [/^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/, 'Please fill a valid email address']
+            trim: true,
+            match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
         },
-        password: { type: String, required: true, select: false },
-        is_verified: { type: Boolean, default: false },
-        is_blocked: { type: Boolean, default: false },
-        is_deleted: { type: Boolean, default: false },
-        last_logged_in: { type: Date, default: null },
-        avatar: { type: String, default: '' },
-        status: { type: String, default: 'A', enum: ['A', 'I'] },
-        created_by: { type: Schema.Types.ObjectId, ref: 'user' },
-        login_history: {
-            select: false,
-            type: [{ login_time: { type: Date }, logout_time: { type: Date }, isCleared: { type: Boolean, default: false } }],
+        phone: {
+            type: String,
+            trim: true,
+            match: [/^\+?[1-9]\d{1,14}$/, 'Please provide a valid phone number']
         },
-        token: { type: String, select: false }
+        password: {
+            type: String,
+            required: [true, 'Password is required'],
+            minlength: [8, 'Password must be at least 8 characters long'],
+            select: false
+        },
+        role: {
+            type: String,
+            enum: ENUMS.role,
+            default: "ROLE_USER",
+            required: [true, 'User role is required']
+        },
+        profileImage: {
+            type: String,
+            trim: true
+        },
+        isActive: {
+            type: Boolean,
+            default: true
+        },
+        isDeleted: {
+            type: Boolean,
+            default: false
+        },
+        lastLogin: {
+            type: Date
+        },
+        school: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: DB_NAMES.school
+        },
+        staff: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: DB_NAMES.staff
+        },
+        student: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: DB_NAMES.students
+        },
+        teacher: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: DB_NAMES.teachers
+        },
+        parent: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: DB_NAMES.parents
+        },
+        isBlocked: {
+            type: Boolean,
+            default: false
+        }
+
 
     },
-    { timestamps: true }
+    {
+        timestamps: true,
+        collection: DB_NAMES.users
+    }
 );
 
-// Generate User token for authentication
-UserSchema.methods.isSignedToken = function () {
-    return jwt.sign({ id: this._id }, config.jwt.JWT_SECRET, {
-        expiresIn: config.jwt.JWT_EXPIRE
-    });
+UserSchema.index({ email: 1, school: 1 }, { unique: true });
+
+UserSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) return next();
+
+    try {
+        // Generate a salt
+        const salt = await bcrypt.genSalt(10);
+
+        // Hash the password along with the salt
+        this.password = await bcrypt.hash(this.password, salt);
+        next();
+    } catch (error: any) {
+        return next(error);
+    }
+});
+
+UserSchema.methods.comparePassword = async function (candidatePassword: string) {
+    return bcrypt.compare(candidatePassword, this.password);
 };
 
-export default mongoose.model<any>('user', UserSchema); 
+UserSchema.statics.findByEmail = async function (email: string) {
+    return this.findOne({ email: email.toLowerCase() });
+};
+
+
+const User: Model<IUser> = mongoose.model<IUser>(DB_NAMES.users, UserSchema);
+
+export default User;

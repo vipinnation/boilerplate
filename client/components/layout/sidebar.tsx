@@ -1,8 +1,7 @@
-"use client";
+'use client';
 
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   LayoutDashboard,
   Users,
@@ -11,81 +10,77 @@ import {
   FileSpreadsheet,
   MessageSquare,
   Settings,
-  Building2,
-} from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+  Building2
+} from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const routes = [
   {
-    label: "Dashboard",
+    label: 'Dashboard',
     icon: LayoutDashboard,
-    href: "/school",
+    href: '/school'
   },
   {
-    label: "Branches",
+    label: 'Branches',
     icon: Building2,
-    href: "/school/branches",
+    href: '/school/branches'
   },
   {
-    label: "Students",
+    label: 'Students',
     icon: GraduationCap,
-    href: "/school/students",
+    href: '/school/students'
   },
   {
-    label: "Staff",
+    label: 'Staff',
     icon: Users,
-    href: "/school/staff",
+    href: '/school/staff'
   },
   {
-    label: "Classes",
+    label: 'Classes',
     icon: Calendar,
-    href: "/school/classes",
+    href: '/school/classes'
   },
   {
-    label: "Reports",
+    label: 'Reports',
     icon: FileSpreadsheet,
-    href: "/school/reports",
+    href: '/school/reports'
   },
   {
-    label: "Messages",
+    label: 'Messages',
     icon: MessageSquare,
-    href: "/school/messages",
+    href: '/school/messages'
   },
   {
-    label: "Settings",
+    label: 'Settings',
     icon: Settings,
-    href: "/school/settings",
-  },
+    href: '/school/settings'
+  }
 ];
 
-export function Sidebar() {
+const SchoolSidebar = () => {
   const pathname = usePathname();
 
   return (
     <div className="py-4 flex flex-col h-full bg-secondary/10 mt-16">
       <div className="px-3 py-2 flex-1">
-        <ScrollArea className="h-[calc(100vh-8rem)]">
-          <div className="space-y-1">
-            {routes.map((route) => (
-              <Button
-                key={route.href}
-                variant={pathname === route.href ? "secondary" : "ghost"}
-                className={cn(
-                  "w-full justify-start",
-                  pathname === route.href && "bg-secondary"
-                )}
-                asChild
-              >
-                <Link href={route.href}>
-                  <route.icon className="h-5 w-5 mr-3" />
-                  {route.label}
-                </Link>
-              </Button>
-            ))}
-          </div>
-        </ScrollArea>
+        <div className="space-y-1">
+          {routes.map((route) => (
+            <Button
+              key={route.href}
+              variant={pathname === route.href ? 'secondary' : 'ghost'}
+              className={`w-full justify-start ${pathname === route.href ? 'bg-secondary' : null}`}
+            >
+              <Link href={route.href} className="flex">
+                <route.icon className="h-5 w-5 mr-3" />
+                {route.label}
+              </Link>
+            </Button>
+          ))}
+        </div>
       </div>
     </div>
   );
-}
+};
+
+export default SchoolSidebar;

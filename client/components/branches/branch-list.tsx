@@ -1,34 +1,27 @@
-"use client";
+'use client';
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Edit, Trash2 } from "lucide-react";
-import type { Branch } from "@/types";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Edit, Trash2 } from 'lucide-react';
+import type { Branch } from '@/types';
 
 const branches: Branch[] = [
   {
-    id: "1",
-    name: "Main Campus",
-    address: "123 Education St, City",
-    phone: "+1 234-567-8900",
-    email: "main@school.com",
-    adminId: "admin1",
+    id: '1',
+    name: 'Main Campus',
+    address: '123 Education St, City',
+    phone: '+1 234-567-8900',
+    email: 'main@school.com',
+    adminId: 'admin1'
   },
   {
-    id: "2",
-    name: "North Branch",
-    address: "456 Learning Ave, Town",
-    phone: "+1 234-567-8901",
-    email: "north@school.com",
-    adminId: "admin2",
-  },
+    id: '2',
+    name: 'North Branch',
+    address: '456 Learning Ave, Town',
+    phone: '+1 234-567-8901',
+    email: 'north@school.com',
+    adminId: 'admin2'
+  }
 ];
 
 export function BranchList() {

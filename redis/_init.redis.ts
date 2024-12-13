@@ -2,8 +2,14 @@ import { createClient } from 'redis';
 import Logger from '../library/logger';
 
 // Connecting redis
-const client = createClient({ url: 'redis://redis:6379' });
+let client_address: any = { url: `rediss://red-cnjff5ev3ddc738c4860:qxQ5KCN7FnVufDxktbhHrEpcHdUU5EPX@oregon-redis.render.com:6379` }
+// let client_address: any = `${process.env.IS_DOCKER ? { url: 'redis://redis:6379' } : ''}`
 
+
+// let client_address = { url: `redis://${config.SERVER_IP}:6379` }
+
+// Connecting redis
+const client = createClient(client_address);
 client.on('error', (err) => Logger.error(err));
 client.on('connect', () => Logger.success('Redis connected successfully'));
 client.on('end', () => Logger.success('Redis disconnected successfully'));

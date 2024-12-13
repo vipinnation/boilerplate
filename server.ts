@@ -42,7 +42,7 @@ const port = process.env.PORT || 5000;
 export const server = http.createServer(app);
 
 server.listen(port, () => {
-    Logger.info(`⚡️ Server is running at http://localhost:${port} on process no ${process.pid}  === ${process.env.MONGO_USERNAME}`);
+    Logger.info(`⚡️ Server is running at http://localhost:${port}`);
 });
 
 

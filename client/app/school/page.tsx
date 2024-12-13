@@ -1,36 +1,30 @@
-"use client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Overview } from "@/components/dashboard/overview";
-import { RecentActivity } from "@/components/dashboard/recent-activity";
-import { Users, GraduationCap, Building2, BookOpen } from "lucide-react";
-import AttendanceLineChart from "@/components/school/attendance.chart";
-import RevenueLineChart from "@/components/school/revenue.chart";
-import ExpenseBarChart from "@/components/school/expense.chart";
-import NetProfitLossChart from "@/components/school/net-profile.chart";
-import OutstandingPaymentsChart from "@/components/school/outstanding.chart";
-import SchoolLayout from "@/components/layout/school.layout";
+'use client';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Overview } from '@/components/dashboard/overview';
+import { RecentActivity } from '@/components/dashboard/recent-activity';
+import { Users, GraduationCap, Building2, BookOpen } from 'lucide-react';
+import AttendanceLineChart from '@/components/school/attendance.chart';
+import RevenueLineChart from '@/components/school/revenue.chart';
+import ExpenseBarChart from '@/components/school/expense.chart';
+import NetProfitLossChart from '@/components/school/net-profile.chart';
+import OutstandingPaymentsChart from '@/components/school/outstanding.chart';
+import SchoolLayout from '@/components/layout/school.layout';
 
 export default function DashboardPage() {
   return (
-    <SchoolLayout>
+    <>
       <div className="p-8 bg-background h-full">
-        <h1 className="text-3xl font-bold mb-6">
-          School Administration Dashboard
-        </h1>
+        <h1 className="text-3xl font-bold mb-6">School Administration Dashboard</h1>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {[...new Array(4)].map((_, index) => (
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Total Students
-                </CardTitle>
+                <CardTitle className="text-sm font-medium">Total Students</CardTitle>
                 <GraduationCap className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">1,234</div>
-                <p className="text-xs text-muted-foreground">
-                  +5% from last month
-                </p>
+                <p className="text-xs text-muted-foreground">+5% from last month</p>
               </CardContent>
             </Card>
           ))}
@@ -126,6 +120,6 @@ export default function DashboardPage() {
           </Card>
         </div>
       </div>
-    </SchoolLayout>
+    </>
   );
 }
